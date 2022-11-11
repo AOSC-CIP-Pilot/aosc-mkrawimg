@@ -1,0 +1,28 @@
+#!/bin/bash
+IMAGE_TOTAL_SIZE=7620
+DUAL_PARTITION=0
+
+FIRST_PARTITION_SIZE=$(( $IMAGE_TOTAL_SIZE - 2 ))
+FIRST_PARTITION_TYPE=ext4
+
+DEVICE_NAME=pc110
+
+do_fill_image() {
+	pushd p1
+		echo "Unpacking system distribution ..."
+		tar --numeric-owner -pxvf "${TARBALL}"
+
+		echo "Creating a swap file ..."
+		fallocate -l 4G swapfile
+		chmod -v 600 swapfile
+		mkswap swapfile
+		echo "/swapfile	swap		swap		defaults	0	0" \
+			>> etc/fstab
+
+		echo "Setting default root password ..."
+		chroot . sh -c "echo 'root:anthon' | chpasswd"
+
+		echo "Setting default hostname ..."
+		echo Boston > etc/hostname
+	popd
+}
