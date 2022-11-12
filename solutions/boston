@@ -1,11 +1,11 @@
 #!/bin/bash
 DUAL_PARTITION=0
 
-# Default to 8GB card size.
-FIRST_PARTITION_SIZE=$(( ${IMAGE_TOTAL_SIZE:=7620} - 2 ))
-FIRST_PARTITION_TYPE=ext4
+DEVICE_NAME=boston
 
-DEVICE_NAME=pc110
+# Default to 16GB card size.
+FIRST_PARTITION_SIZE=$(( ${IMAGE_TOTAL_SIZE:=15250} - 2 ))
+FIRST_PARTITION_TYPE=ext4
 
 do_fill_image() {
 	pushd p1
@@ -24,5 +24,8 @@ do_fill_image() {
 
 		echo "Setting default hostname ..."
 		echo Boston > etc/hostname
+
+		echo "Moving kernel image out ..."
+		mv -v boot/vmlinux* "$OUTDIR"/
 	popd
 }
