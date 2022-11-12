@@ -49,7 +49,7 @@ source solutions/"$SOLUTION"
 mkdir -p out aux_log
 set -o pipefail
 
-image_name="${DEVICE_NAME}_${SOLUTION}_$(date -u +%F)${IMAGE_NAME_EXTRA}"
+image_name="${IMAGE_NAME:-${DEVICE_NAME}_${SOLUTION}_$(date -u +%F)${IMAGE_NAME_EXTRA}}"
 
 apt-get install ${DEPENDENCIES} -y > aux_log/"${image_name}".log
 
@@ -97,7 +97,8 @@ fi
 
 
 # This environment variables are passed to do_fill_image
-export IMAGE="$(readlink -e out/${image_name}.img)"
+export OUTDIR="$PWD/out"
+export IMAGE="$(readlink -e $OUTDIR/${image_name}.img)"
 export IMAGE_DEVICE="${loop_device}"
 
 temp_dir=$(mktemp -d)
